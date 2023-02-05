@@ -4,13 +4,9 @@ apply plugin: 'signing'
 task androidSourcesJar(type: Jar) {
     archiveClassifier.set('sources')
     if (project.plugins.findPlugin("com.android.library")) {
-        // For Android libraries
         from android.sourceSets.main.java.srcDirs
-        from android.sourceSets.main.kotlin.srcDirs
     } else {
-        // For pure Kotlin libraries, in case you have them
         from sourceSets.main.java.srcDirs
-        from sourceSets.main.kotlin.srcDirs
     }
 }
 
@@ -35,38 +31,36 @@ afterEvaluate {
                 if (project.plugins.findPlugin("com.android.library")) {
                     from components.release
                 } else {
-                    from components.java
+                    artifact("$buildDir/libs/${project.getName()}-${version}.jar")
                 }
 
                 artifact androidSourcesJar
-                artifact javadocJar
 
                 // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'My Maven'
-                    url = 'https://github.com/aakarshrestha/MyMaven101'
+                    description = PUBLISH_DESCRIPTION
+                    url = PUBLISH_URL
                     licenses {
                         license {
-                            name = 'My Maven License'
-                            url = 'https://github.com/aakarshrestha/MyMaven101/blob/main/LICENSE'
+                            name = PUBLISH_LICENSE_NAME
+                            url = PUBLISH_LICENSE_URL
                         }
                     }
                     developers {
                         developer {
-                            id = 'aakarshrestha'
-                            name = 'Aakar Shrestha'
-                            email = 'aakar.shrestha@gmail.com'
+                            id = PUBLISH_DEVELOPER_ID
+                            name = PUBLISH_DEVELOPER_NAME
+                            email = PUBLISH_DEVELOPER_EMAIL
                         }
-                        // Add all other devs here...
                     }
 
                     // Version control info - if you're using GitHub, follow the
                     // format as seen here
                     scm {
-                        connection = 'scm:git:github.com/aakarshrestha/MyMaven101.git'
-                        developerConnection = 'scm:git:ssh://github.com/aakarshrestha/MyMaven101.git'
-                        url = 'https://github.com/aakarshrestha/MyMaven101/tree/main'
+                        connection = PUBLISH_SCM_CONNECTION
+                        developerConnection = PUBLISH_SCM_DEVELOPER_CONNECTION
+                        url = PUBLISH_SCM_URL
                     }
                 }
             }
@@ -74,11 +68,10 @@ afterEvaluate {
     }
 }
 
+ext["signing.keyId"] = rootProject.ext["signing.keyId"]
+ext["signing.password"] = rootProject.ext["signing.password"]
+ext["signing.secretKeyRingFile"] = rootProject.ext["signing.secretKeyRingFile"]
+
 signing {
-    useInMemoryPgpKeys(
-            rootProject.ext["signing.keyId"],
-            rootProject.ext["signing.key"],
-            rootProject.ext["signing.password"],
-    )
     sign publishing.publications
 }
