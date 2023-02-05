@@ -1,10 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
-
-group = PUBLISH_GROUP_ID
-version = PUBLISH_VERSION
 
 android {
     namespace 'com.example.sunday'
@@ -49,9 +47,9 @@ afterEvaluate {
             release(MavenPublication) {
                 // The coordinates of the library, being set from variables that
                 // we'll set up later
-                groupId PUBLISH_GROUP_ID
-                artifactId PUBLISH_ARTIFACT_ID
-                version PUBLISH_VERSION
+                groupId "com.aakarshrestha"
+                artifactId "aakar"
+                version "1.0.0"
 
                 // Two artifacts, the `aar` (or `jar`) and the sources
                 if (project.plugins.findPlugin("com.android.library")) {
@@ -60,14 +58,11 @@ afterEvaluate {
                     from components.java
                 }
 
-                artifact androidSourcesJar
-                artifact javadocJar
-
                 // Mostly self-explanatory metadata
                 pom {
-                    name = PUBLISH_ARTIFACT_ID
+                    name = "PUBLISH_ARTIFACT_ID"
                     description = 'My Maven'
-                    url = 'https://github.com/getstream/stream-chat-android'
+                    url = 'https://github.com/aakarshrestha/MyMaven101'
                     licenses {
                         license {
                             name = 'Stream License'
